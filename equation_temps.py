@@ -3,16 +3,21 @@ import matplotlib.pyplot as plt
 import datetime
 
 def equation_du_temps(jour):
-    # Constantes pour l'équation exacte
-    epsilon = np.radians(23.44)  # Inclinaison de l'axe terrestre
-    L0 = np.radians(280.4665 + 0.9856474 * jour)  # Longitude moyenne du Soleil
-    e = 0.0167086  # Excentricité de l'orbite terrestre
-    C = np.radians((1.914602 - 0.004817 * jour / 365 - 0.000014 * (jour / 365)**2) * np.sin(L0) +
-                   (0.019993 - 0.000101 * jour / 365) * np.sin(2 * L0) +
-                   0.000289 * np.sin(3 * L0))  # Équation du centre
-    Ls = L0 + C  # Longitude vraie du Soleil
-    RA = np.arctan2(np.cos(epsilon) * np.sin(Ls), np.cos(Ls))  # Ascension droite du Soleil
-    EOT = 4 * np.degrees(L0 - 0.0057183 - RA)  # Équation du temps en minutes
+    # Équation du temps approximée en minutes
+    # Formule simplifiée avec deux termes principaux :
+    # - Premier terme : effet de l'excentricité de l'orbite
+    # - Second terme : effet de l'obliquité de l'écliptique
+
+    # Conversion du jour de l'année en angle (en radians)
+    angle = 2 * np.pi * (jour - 1) / 365
+
+    # Calcul des termes de l'équation approximée
+    terme1 = 7.53 * np.sin(angle + 1.48)  # Effet de l'excentricité
+    terme2 = 9.87 * np.sin(2 * angle + 1.37)  # Effet de l'obliquité
+
+    # Équation du temps approximée
+    EOT = terme1 + terme2
+
     return EOT
 
 def create_eot_plot(annee):
@@ -47,13 +52,13 @@ def create_eot_plot(annee):
     
     # Création du graphique
     fig, ax = plt.subplots(figsize=(12, 6))
-    ax.plot(jours, eot_values, label="Équation du temps inversée", color='r')
+    ax.plot(jours, eot_values, label="Équation du temps inversée (approximée)", color='r')
     ax.axhline(0, color='black', linewidth=0.5, linestyle='--')
     ax.set_xticks(mois_positions)
     ax.set_xticklabels(mois_labels)
     ax.set_xlabel("Mois de l'année")
     ax.set_ylabel("Équation du temps (minutes)")
-    ax.set_title(f"Équation du Temps Inversée pour un Cadran Solaire - Année {annee}")
+    ax.set_title(f"Équation du Temps Inversée Approximée - Année {annee}")
     ax.legend()
     ax.grid(True)
     
