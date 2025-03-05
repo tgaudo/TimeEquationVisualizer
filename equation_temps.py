@@ -3,10 +3,19 @@ import matplotlib.pyplot as plt
 import datetime
 
 def equation_du_temps(jour):
+    """
+    Calcule l'équation du temps selon la formule de Wikipédia
+    https://fr.wikipedia.org/wiki/%C3%89quation_du_temps
+    """
     # Conversion du jour en angle (en radians)
-    B = 2 * np.pi * (jour - 81) / 364  
-    # Approximation de l'équation du temps (en minutes)
-    EOT = -(9.87 * np.sin(2 * B) - 7.53 * np.cos(B) - 1.5 * np.sin(B))
+    # M est l'anomalie moyenne
+    M = 2 * np.pi * (jour - 4) / 365.25
+    # L est la longitude écliptique moyenne
+    L = 2 * np.pi * (jour - 81) / 365.25
+
+    # Équation du temps en minutes
+    # Formule simplifiée de Wikipédia
+    EOT = -7.655 * np.sin(M) + 9.873 * np.sin(2 * L + 3.588)
     return EOT
 
 def create_eot_plot(annee):
