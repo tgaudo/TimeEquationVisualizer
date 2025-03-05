@@ -1,6 +1,7 @@
 import streamlit as st
 import datetime
 from equation_temps import create_eot_plot
+from io import BytesIO
 
 # Configuration de la page
 st.set_page_config(
@@ -50,12 +51,15 @@ Ce graphique est particulièrement utile pour :
 - Étudier les phénomènes astronomiques liés au mouvement apparent du Soleil
 """)
 
-# Bouton pour télécharger le graphique
-st.download_button(
+# Convertir la figure en bytes pour le téléchargement
+buf = BytesIO()
+fig.savefig(buf, format='png')
+buf.seek(0)
+btn = st.download_button(
     label="📥 Télécharger le graphique",
-    data=fig,
+    data=buf,
     file_name=f"equation_temps_{annee}.png",
-    mime="image/png",
+    mime="image/png"
 )
 
 # Footer
