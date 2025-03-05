@@ -1,27 +1,49 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import datetime
+from math import sin, cos, radians, atan2, degrees
 
-def equation_du_temps(jour):
+def equation_du_temps(jour, annee):
     """
-    Calcule l'équation du temps selon la formule de Wikipédia
-    https://fr.wikipedia.org/wiki/%C3%89quation_du_temps
+    Calcule l'équation du temps selon la formule exacte
+    Référence : 1er janvier 2000 12h TU
     """
-    # Conversion du jour en angle (en radians)
-    # M est l'anomalie moyenne
-    M = 2 * np.pi * (jour - 4) / 365.25
-    # L est la longitude écliptique moyenne
-    L = 2 * np.pi * (jour - 81) / 365.25
+    # Obliquité de l'écliptique en degrés
+    eps = 23.439281
 
-    # Équation du temps en minutes
-    # Formule simplifiée de Wikipédia
-    EOT = -7.655 * np.sin(M) + 9.873 * np.sin(2 * L + 3.588)
-    return EOT
+    # Date de référence : 1er janvier 2000 12h TU
+    Tzero = datetime.datetime(2000, 1, 1, 12)
+    date = datetime.datetime(annee, 1, 1) + datetime.timedelta(days=int(jour)-1)
+
+    # Nombre de jours depuis la date de référence
+    T = (date - Tzero).days
+    T = T + (date - Tzero).seconds / 3600 / 24
+
+    # Calcul de la longitude moyenne et de l'anomalie moyenne
+    LM = (280.460 + 0.9856474 * T) % 360
+    M = (357.528 + 0.9856003 * T) % 360
+
+    # Calcul de la longitude vraie
+    long = (LM + 1.915 * sin(radians(M)) + 0.020 * sin(radians(2*M))) % 360
+
+    # Calcul de l'ascension droite
+    AD = atan2(cos(radians(eps)) * sin(radians(long)), cos(radians(long)))
+
+    # Calcul de l'équation du temps en degrés puis en minutes
+    EdT_degres = (degrees(AD) - LM) % 360
+    if EdT_degres > 180:
+        EdT_degres = EdT_degres - 360
+    EdT = EdT_degres * 4
+
+    return EdT
 
 def create_eot_plot(annee):
+    """
+    Crée un graphique de l'équation du temps pour une année donnée
+    """
     # Générer les valeurs pour l'année entière
     jours = np.arange(1, 366)
-    eot_values = [equation_du_temps(j) for j in jours]
+    eot_values = [equation_du_temps(j, annee) for j in jours]
 
     # Création des étiquettes des mois
     mois_labels = ["Jan", "Fév", "Mar", "Avr", "Mai", "Juin", "Juil", "Août", "Sept", "Oct", "Nov", "Déc"]
@@ -42,10 +64,10 @@ def create_eot_plot(annee):
     zero_values = [eot_values[j] for j in zero_crossings]
 
     # Conversion des dates
-    inflection_dates = [datetime.datetime(annee, 1, 1) + datetime.timedelta(days=j-1) for j in inflection_days]
+    inflection_dates = [datetime.datetime(annee, 1, 1) + datetime.timedelta(days=int(j)-1) for j in inflection_days]
     inflection_labels = [f"{date.day} {mois_labels[date.month-1]}" for date in inflection_dates]
 
-    zero_dates = [datetime.datetime(annee, 1, 1) + datetime.timedelta(days=j-1) for j in zero_crossings]
+    zero_dates = [datetime.datetime(annee, 1, 1) + datetime.timedelta(days=int(j)-1) for j in zero_crossings]
     zero_labels = [f"{date.day} {mois_labels[date.month-1]}" for date in zero_dates]
 
     # Création du graphique
