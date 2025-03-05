@@ -3,13 +3,10 @@ import matplotlib.pyplot as plt
 import datetime
 
 def equation_du_temps(jour):
-    # Conversion du jour de l'année en angle (en radians)
-    B = 2 * np.pi * (jour - 1) / 365
-
-    # Équation du temps en minutes
-    # Formule : EOT = -(9.87 * sin(2B) - 7.53 * cos(B) - 1.5 * sin(B))
+    # Conversion du jour en angle (en radians)
+    B = 2 * np.pi * (jour - 81) / 364  
+    # Approximation de l'équation du temps (en minutes)
     EOT = -(9.87 * np.sin(2 * B) - 7.53 * np.cos(B) - 1.5 * np.sin(B))
-
     return EOT
 
 def create_eot_plot(annee):
