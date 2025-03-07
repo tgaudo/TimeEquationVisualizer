@@ -26,7 +26,7 @@ L'équation du temps est la différence entre le temps solaire moyen (celui de n
 ### Formule de l'équation du temps
 L'équation du temps (EdT) est calculée selon la formule suivante :
 
-$$ EdT = 4 \times (AD - LM) $$
+$$ EdT = 4 * (AD - LM) $$
 
 Où :
 - EdT est exprimée en minutes
