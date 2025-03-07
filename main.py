@@ -22,6 +22,20 @@ L'équation du temps est la différence entre le temps solaire moyen (celui de n
 (celui indiqué par un cadran solaire). Cette différence varie au cours de l'année en raison de deux facteurs principaux :
 - L'inclinaison de l'axe de rotation de la Terre
 - L'excentricité de l'orbite terrestre
+
+### Formule de l'équation du temps
+L'équation du temps (EdT) est calculée selon la formule suivante :
+
+$$ EdT = 4 \times (AD - LM) $$
+
+Où :
+- EdT est exprimée en minutes
+- AD (Ascension Droite) = $\\arctan(\\cos(\\varepsilon) \\cdot \\sin(L), \\cos(L))$
+- LM (Longitude Moyenne) = $280.460 + 0.9856474 \\cdot T$
+- L (Longitude vraie) = $LM + 1.915 \\cdot \\sin(M) + 0.020 \\cdot \\sin(2M)$
+- M (Anomalie Moyenne) = $357.528 + 0.9856003 \\cdot T$
+- T est le nombre de jours depuis le 1er janvier 2000 à 12h TU
+- $\\varepsilon$ est l'obliquité de l'écliptique (23.439281°)
 """)
 
 # Sélection de l'année
